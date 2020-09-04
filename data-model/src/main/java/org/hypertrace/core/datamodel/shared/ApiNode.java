@@ -3,43 +3,39 @@ package org.hypertrace.core.datamodel.shared;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.hypertrace.core.datamodel.Event;
-import org.hypertrace.core.datamodel.StructuredTrace;
+import org.apache.avro.generic.GenericRecord;
 
-public class ApiNode {
+public class ApiNode<T extends GenericRecord> {
 
-  private final StructuredTrace trace;
-  private final Event entryApiBoundaryEvent;
-  private final List<Event> exitApiBoundaryEvents;
+  private final T entryApiBoundaryEvent;
+  private final List<T> exitApiBoundaryEvents;
+  private final T headSpan;
+  private final List<T> apiNodeEvents;
 
-  public ApiNode(StructuredTrace trace, Event apiEntryEvent, List<Event> exitEvents) {
-    this.trace = trace;
+  public ApiNode(T headSpan, List<T> apiNodeEvents, T apiEntryEvent, List<T> exitEvents) {
     this.entryApiBoundaryEvent = apiEntryEvent;
     this.exitApiBoundaryEvents = exitEvents;
+    this.headSpan = headSpan;
+    this.apiNodeEvents = apiNodeEvents;
   }
 
   /**
    * Returns the first span in the Api trace. This span could be an API entry or an intermediate
    * service or exit span.
    */
-  public Event getHeadSpan() {
-    Objects.checkIndex(0, trace.getEventList().size());
-    return trace.getEventList().get(0);
-  }
-
-  public StructuredTrace getTrace() {
-    return trace;
+  public T getHeadSpan() {
+    return headSpan;
   }
 
   /**
    * Returns an optional API ENTRY span from this Api node. It's optional because, based on the
    * instrumentation, there could be only Exit call from a service and no Entry.
    */
-  public Optional<Event> getEntryApiBoundaryEvent() {
+  public Optional<T> getEntryApiBoundaryEvent() {
     return Optional.ofNullable(entryApiBoundaryEvent);
   }
 
-  public List<Event> getExitApiBoundaryEvents() {
+  public List<T> getExitApiBoundaryEvents() {
     return exitApiBoundaryEvents;
   }
 
@@ -52,22 +48,30 @@ public class ApiNode {
       return false;
     }
     ApiNode apiNode = (ApiNode) o;
-    return Objects.equals(trace, apiNode.trace) &&
-        Objects.equals(entryApiBoundaryEvent, apiNode.entryApiBoundaryEvent) &&
-        Objects.equals(exitApiBoundaryEvents, apiNode.exitApiBoundaryEvents);
+    return Objects.equals(entryApiBoundaryEvent, apiNode.entryApiBoundaryEvent) &&
+        Objects.equals(exitApiBoundaryEvents, apiNode.exitApiBoundaryEvents) &&
+        Objects.equals(headSpan, apiNode.headSpan) &&
+        Objects.equals(apiNodeEvents, apiNode.apiNodeEvents);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(trace, entryApiBoundaryEvent, exitApiBoundaryEvents);
+    return Objects.hash(entryApiBoundaryEvent, exitApiBoundaryEvents, headSpan, apiNodeEvents);
   }
 
   @Override
   public String toString() {
-    return "ApiNode{" +
-        "trace=" + trace +
-        ", entryApiBoundaryEvent=" + entryApiBoundaryEvent +
-        ", exitApiBoundaryEvents=" + exitApiBoundaryEvents +
-        '}';
+    StringBuilder sb = new StringBuilder();
+    sb.append("ApiNode{")
+        .append("entryApiBoundaryEvent=")
+        .append(entryApiBoundaryEvent)
+        .append(", exitApiBoundaryEvents=")
+        .append(exitApiBoundaryEvents)
+        .append(", headSpan=")
+        .append(headSpan)
+        .append(", apiNodeEvents")
+        .append(apiNodeEvents)
+        .append('}');
+    return sb.toString();
   }
 }
