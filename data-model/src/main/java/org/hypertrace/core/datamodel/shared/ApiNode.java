@@ -39,6 +39,10 @@ public class ApiNode<T extends GenericRecord> {
     return exitApiBoundaryEvents;
   }
 
+  public List<T> getApiNodeEvents() {
+    return apiNodeEvents;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
