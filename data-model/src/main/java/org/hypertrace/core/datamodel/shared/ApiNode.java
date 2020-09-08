@@ -9,22 +9,31 @@ public class ApiNode<T extends GenericRecord> {
 
   private final T entryApiBoundaryEvent;
   private final List<T> exitApiBoundaryEvents;
-  private final T headSpan;
-  private final List<T> apiNodeEvents;
+  private final T headEvent;
+  private final List<T> events;
 
-  public ApiNode(T headSpan, List<T> apiNodeEvents, T apiEntryEvent, List<T> exitEvents) {
+  /**
+   * This creates an API Node(surprise) which contains all the events under an API call within a
+   * single service. The call could be external or internal.
+   * @param headEvent: The event that defines the API call. The head of the API Trace.
+   * @param events: All events under the API call including the head event.
+   * @param apiEntryEvent: The Entry API event. Equals the head event if the head event is an Entry
+   *                     Event. Otherwise it's null.
+   * @param exitEvents: The exit events into another service and API from this API call.
+   */
+  public ApiNode(T headEvent, List<T> events, T apiEntryEvent, List<T> exitEvents) {
     this.entryApiBoundaryEvent = apiEntryEvent;
     this.exitApiBoundaryEvents = exitEvents;
-    this.headSpan = headSpan;
-    this.apiNodeEvents = apiNodeEvents;
+    this.headEvent = headEvent;
+    this.events = events;
   }
 
   /**
    * Returns the first span in the Api trace. This span could be an API entry or an intermediate
    * service or exit span.
    */
-  public T getHeadSpan() {
-    return headSpan;
+  public T getHeadEvent() {
+    return headEvent;
   }
 
   /**
@@ -39,8 +48,8 @@ public class ApiNode<T extends GenericRecord> {
     return exitApiBoundaryEvents;
   }
 
-  public List<T> getApiNodeEvents() {
-    return apiNodeEvents;
+  public List<T> getEvents() {
+    return events;
   }
 
   @Override
@@ -54,13 +63,13 @@ public class ApiNode<T extends GenericRecord> {
     ApiNode apiNode = (ApiNode) o;
     return Objects.equals(entryApiBoundaryEvent, apiNode.entryApiBoundaryEvent) &&
         Objects.equals(exitApiBoundaryEvents, apiNode.exitApiBoundaryEvents) &&
-        Objects.equals(headSpan, apiNode.headSpan) &&
-        Objects.equals(apiNodeEvents, apiNode.apiNodeEvents);
+        Objects.equals(headEvent, apiNode.headEvent) &&
+        Objects.equals(events, apiNode.events);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(entryApiBoundaryEvent, exitApiBoundaryEvents, headSpan, apiNodeEvents);
+    return Objects.hash(entryApiBoundaryEvent, exitApiBoundaryEvents, headEvent, events);
   }
 
   @Override
@@ -71,10 +80,10 @@ public class ApiNode<T extends GenericRecord> {
         .append(entryApiBoundaryEvent)
         .append(", exitApiBoundaryEvents=")
         .append(exitApiBoundaryEvents)
-        .append(", headSpan=")
-        .append(headSpan)
-        .append(", apiNodeEvents")
-        .append(apiNodeEvents)
+        .append(", headEvent=")
+        .append(headEvent)
+        .append(", events")
+        .append(events)
         .append('}');
     return sb.toString();
   }

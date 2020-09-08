@@ -21,8 +21,8 @@ public class ApiNodeTest {
     List<Event> apiNodeEvents = List.of(e1, e2, e3, e4);
     List<Event> exitEvents = List.of(e4);
     ApiNode<Event> apiNode = new ApiNode<>(e1, apiNodeEvents, e1, exitEvents);
-    assertEquals(e1, apiNode.getHeadSpan());
-    assertEquals(apiNodeEvents, apiNode.getApiNodeEvents());
+    assertEquals(e1, apiNode.getHeadEvent());
+    assertEquals(apiNodeEvents, apiNode.getEvents());
     assertEquals(Optional.of(e1), apiNode.getEntryApiBoundaryEvent());
     assertEquals(exitEvents, apiNode.getExitApiBoundaryEvents());
   }
@@ -52,5 +52,11 @@ public class ApiNodeTest {
 
     System.out.println(apiNode1);
     assertNotNull(apiNode1.toString());
+
+    assertNotEquals(null, apiNode1);
+    assertNotEquals(12, apiNode2);
+    assertNotEquals(new ApiNode<>(e2, apiNodeEvents, e1, exitEvents), apiNode1);
+    assertNotEquals(new ApiNode<>(e1, List.of(e1, e4), e1, exitEvents), apiNode1);
+    assertNotEquals(new ApiNode<>(e1, apiNodeEvents, e1, List.of(e3, e4)), apiNode1);
   }
 }
