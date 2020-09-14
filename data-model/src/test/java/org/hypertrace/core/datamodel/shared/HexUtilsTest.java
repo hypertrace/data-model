@@ -12,7 +12,8 @@ public class HexUtilsTest {
     ByteBuffer byteBuffer = ByteBuffer.wrap(testString.getBytes());
 
     assertEquals("01020304", HexUtils.getHex(byteBuffer));
-    // The first call should not make sure to reset the position of the buffer to 0.
+    // The first call should make sure to reset the position of the buffer to 0. We should get back
+    // a value equal to the first call if we make the call again.
     assertEquals("01020304", HexUtils.getHex(byteBuffer));
   }
 
@@ -23,7 +24,8 @@ public class HexUtilsTest {
 
     byte[] expectedBytes = new byte[] {1, 2, 3, 4};
     compareByteArrays(expectedBytes, HexUtils.getBytes(byteBuffer));
-    // The first call should not make sure to reset the position of the buffer to 0.
+    // The first call should make sure to reset the position of the buffer to 0. We should get back
+    // a value equal to the first call if we make the call again.
     compareByteArrays(expectedBytes, HexUtils.getBytes(byteBuffer));
   }
 
