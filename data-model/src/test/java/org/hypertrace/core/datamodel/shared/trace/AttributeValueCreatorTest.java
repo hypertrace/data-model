@@ -24,7 +24,8 @@ public class AttributeValueCreatorTest {
     AttributeValue attributeValue = AttributeValueCreator.createFromByteBuffers(byteBufferSet);
     assertEquals(List.of(testString1, testString2), attributeValue.getValueList());
 
-    // Calling AttributeValueCreator.createFromByteBuffers() should result in the same value.
+    // Calling AttributeValueCreator.createFromByteBuffers() should equal the same value from the
+    // first call.
     AttributeValue attributeValue2 = AttributeValueCreator.createFromByteBuffers(byteBufferSet);
     assertEquals(List.of(testString1, testString2), attributeValue2.getValueList());
   }
