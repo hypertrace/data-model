@@ -7,6 +7,9 @@ protocol GrpcProtocol {
     union { null, string } body = null;
     int size = 0;
     map<string> metadata = {};
+    union { null, string } service = null;
+    union { null, string } path = null;
+    union { null, string } url = null;
   }
 
   record Response {
