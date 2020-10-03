@@ -3,7 +3,8 @@ protocol EventProtocol {
   import idl "Metrics.avdl";
   import idl "Attributes.avdl";
   import idl "eventfields/http/Http.avdl";
-  import idl "eventfields/grpc/Rpc.avdl";
+  import idl "eventfields/grpc/Grpc.avdl";
+  import idl "eventfields/rpc/Rpc.avdl";
   import idl "eventfields/sql/Sql.avdl";
   import idl "eventfields/jaeger/JaegerFields.avdl";
 
