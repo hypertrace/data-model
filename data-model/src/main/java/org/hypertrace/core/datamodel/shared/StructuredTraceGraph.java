@@ -118,10 +118,6 @@ public class StructuredTraceGraph {
       return;
     }
 
-    for (Entity entity : entities) {
-      entityMap.put(entity.getEntityId(), entity);
-    }
-
     List<Edge> entityEdges = trace.getEntityEdgeList();
     if (entityEdges != null) {
       for (Edge entityEdge : trace.getEntityEdgeList()) {
