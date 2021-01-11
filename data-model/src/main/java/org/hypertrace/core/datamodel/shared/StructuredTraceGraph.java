@@ -54,10 +54,16 @@ public class StructuredTraceGraph {
     return graph;
   }
 
+  /**
+   * @return an immutable set containing the root events
+   */
   public Set<Event> getRootEvents() {
     return rootEvents;
   }
 
+  /**
+   * @return an immutable set containing the root entities
+   */
   public Set<Entity> getRootEntities() {
     return rootEntities;
   }
@@ -78,6 +84,9 @@ public class StructuredTraceGraph {
     return parentToChildrenEntities.get(entity.getEntityId());
   }
 
+  /**
+   * @return an immutable map of entity ids to entities
+   */
   public Map<String, Entity> getEntityMap() {
     return entityMap;
   }
@@ -107,8 +116,8 @@ public class StructuredTraceGraph {
         Integer targetIndex = edge.getTgtIndex();
         Event parentEvent = events.get(sourceIndex);
         Event childEvent = events.get(targetIndex);
-        parentToChildrenEvents.putIfAbsent(parentEvent.getEventId(), new ArrayList<>());
-        parentToChildrenEvents.get(parentEvent.getEventId()).add(childEvent);
+        parentToChildrenEvents.computeIfAbsent(parentEvent.getEventId(), k -> new ArrayList<>())
+            .add(childEvent);
         childToParentEvents.put(childEvent.getEventId(), parentEvent);
       }
     }
@@ -125,10 +134,10 @@ public class StructuredTraceGraph {
         Integer targetIndex = entityEdge.getTgtIndex();
         Entity parentEntity = entities.get(sourceIndex);
         Entity childEntity = entities.get(targetIndex);
-        parentToChildrenEntities.putIfAbsent(parentEntity.getEntityId(), new ArrayList<>());
-        parentToChildrenEntities.get(parentEntity.getEntityId()).add(childEntity);
-        childToParentEntities.putIfAbsent(childEntity.getEntityId(), new ArrayList<>());
-        childToParentEntities.get(childEntity.getEntityId()).add(parentEntity);
+        parentToChildrenEntities.computeIfAbsent(parentEntity.getEntityId(), k -> new ArrayList<>())
+            .add(childEntity);
+        childToParentEntities.computeIfAbsent(childEntity.getEntityId(), k -> new ArrayList<>())
+            .add(parentEntity);
       }
     }
   }
@@ -162,7 +171,9 @@ public class StructuredTraceGraph {
         .collect(Collectors.toUnmodifiableSet());
   }
 
-
+  /**
+   * @return an immutable map of event ids to events
+   */
   public Map<ByteBuffer, Event> getEventMap() {
     return eventMap;
   }
