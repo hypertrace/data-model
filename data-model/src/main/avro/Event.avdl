@@ -34,6 +34,8 @@ protocol EventProtocol {
     // Event may be associated with multiple entities
     array<string> entity_id_list = [];
 
+    int resource_index = -1;
+
     // Raw attributes corresponding to this event that came from the original tracer.
     union { null, Attributes } attributes = null;
 
