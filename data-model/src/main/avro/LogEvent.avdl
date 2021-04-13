@@ -1,0 +1,19 @@
+@namespace("org.hypertrace.core.datamodel")
+protocol LogEventProtocol {
+  import idl "Attributes.avdl";
+
+  record LogEvent {
+    long timestamp_micros = 0;
+
+    /** tenant_id serves the prupose of identifying customer **/
+    union { null, string } tenant_id = null;
+
+    union { null, bytes } span_id = null;
+    union { null, bytes } trace_id = null;
+    union { null, Attributes } attributes = null;
+  }
+
+  record LogEvents {
+    array<LogEvent> log_event_records = [];
+  }
+}
