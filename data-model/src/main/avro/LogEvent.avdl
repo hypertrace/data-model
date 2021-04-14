@@ -3,9 +3,9 @@ protocol LogEventProtocol {
   import idl "Attributes.avdl";
 
   record LogEvent {
-    long timestamp_micros = 0;
+    long timestamp_nanos = 0;
 
-    /** tenant_id serves the prupose of identifying customer **/
+    /** tenant_id serves the purpose of identifying tenant **/
     union { null, string } tenant_id = null;
 
     union { null, bytes } span_id = null;
