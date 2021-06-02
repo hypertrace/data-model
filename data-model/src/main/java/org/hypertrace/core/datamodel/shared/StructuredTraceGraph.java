@@ -11,8 +11,10 @@ public class StructuredTraceGraph {
   private TraceEventsGraph traceEventsGraph;
   private TraceEntitiesGraph traceEntitiesGraph;
 
+  private static StructuredTraceGraph graph;
+
   public static StructuredTraceGraph createGraph(StructuredTrace trace) {
-    StructuredTraceGraph graph = new StructuredTraceGraph();
+    graph = new StructuredTraceGraph();
     graph.traceEventsGraph = TraceEventsGraph.createGraph(trace);
     graph.traceEntitiesGraph = TraceEntitiesGraph.createGraph(trace);
 
@@ -20,14 +22,17 @@ public class StructuredTraceGraph {
   }
 
   public static StructuredTraceGraph reCreateTraceEventsGraph(StructuredTrace trace) {
-    StructuredTraceGraph graph = new StructuredTraceGraph();
+    if (null == graph) {
+      return createGraph(trace);
+    }
     graph.traceEventsGraph = TraceEventsGraph.createGraph(trace);
-
     return graph;
   }
 
   public static StructuredTraceGraph reCreateTraceEntitiesGraph(StructuredTrace trace) {
-    StructuredTraceGraph graph = new StructuredTraceGraph();
+    if (null == graph) {
+      return createGraph(trace);
+    }
     graph.traceEntitiesGraph = TraceEntitiesGraph.createGraph(trace);
 
     return graph;
