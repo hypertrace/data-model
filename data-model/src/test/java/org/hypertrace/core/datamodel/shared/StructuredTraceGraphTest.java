@@ -86,15 +86,17 @@ class StructuredTraceGraphTest {
         Sets.newHashSet(entities.get(rootIndex1), entities.get(rootIndex2));
 
     graph = StructuredTraceGraph.createGraph(trace);
-    assertEquals(expectedRootEntities, graph.getRootEntities());
-    assertEquals(expectedRootEvents, graph.getRootEvents());
-    assertEquals(events.get(sourceIdx1), graph.getParentEvent(events.get(targetIdx1)));
+    TraceEntitiesGraph entitiesGraph = graph.getTraceEntitiesGraph();
+    TraceEventsGraph eventsGraph = graph.getTraceEventsGraph();
+    assertEquals(expectedRootEntities, entitiesGraph.getRootEntities());
+    assertEquals(expectedRootEvents, eventsGraph.getRootEvents());
+    assertEquals(events.get(sourceIdx1), eventsGraph.getParentEvent(events.get(targetIdx1)));
     assertEquals(Lists.newArrayList(entities.get(sourceIdx1)),
-        graph.getParentEntities(entities.get(targetIdx1)));
-    List<Entity> root1Children = graph.getChildrenEntities(entities.get(rootIndex1));
+        entitiesGraph.getParentEntities(entities.get(targetIdx1)));
+    List<Entity> root1Children = entitiesGraph.getChildrenEntities(entities.get(rootIndex1));
     assertEquals(Lists.newArrayList(entities.get(targetIdx1)), root1Children);
-    assertEquals(expectedEventMap, graph.getEventMap());
-    assertEquals(childToParentIds, graph.getChildIdsToParentIds());
+    assertEquals(expectedEventMap, eventsGraph.getEventMap());
+    assertEquals(childToParentIds, eventsGraph.getChildIdsToParentIds());
   }
 
   private void setupEventAndEntityMocks(int totalEvent) {
@@ -158,13 +160,15 @@ class StructuredTraceGraphTest {
     StructuredTraceAssert.assertEntityEventEdges(trace);
 
     StructuredTraceGraph graph = StructuredTraceGraph.createGraph(trace);
-    assertEquals(2, graph.getEventMap().size());
-    assertEquals(1, graph.getRootEntities().size());
-    assertEquals(1, graph.getRootEvents().size());
-    assertTrue(graph.getChildIdsToParentIds().containsKey(e2.getEventId()));
-    assertTrue(graph.getParentToChildEventIds().containsKey(e1.getEventId()));
-    assertTrue(graph.getParentEntities(entity2).contains(entity1));
-    assertEquals(e1, graph.getParentEvent(e2));
+    TraceEntitiesGraph entitiesGraph = graph.getTraceEntitiesGraph();
+    TraceEventsGraph eventsGraph = graph.getTraceEventsGraph();
+    assertEquals(2, eventsGraph.getEventMap().size());
+    assertEquals(1, entitiesGraph.getRootEntities().size());
+    assertEquals(1, eventsGraph.getRootEvents().size());
+    assertTrue(eventsGraph.getChildIdsToParentIds().containsKey(e2.getEventId()));
+    assertTrue(eventsGraph.getParentToChildEventIds().containsKey(e1.getEventId()));
+    assertTrue(entitiesGraph.getParentEntities(entity2).contains(entity1));
+    assertEquals(e1, eventsGraph.getParentEvent(e2));
   }
 
   private ByteBuffer generateRandomId() {
