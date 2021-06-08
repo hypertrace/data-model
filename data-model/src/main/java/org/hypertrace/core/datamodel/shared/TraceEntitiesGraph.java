@@ -1,6 +1,5 @@
 package org.hypertrace.core.datamodel.shared;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.hypertrace.core.datamodel.Edge;
 import org.hypertrace.core.datamodel.Entity;
-import org.hypertrace.core.datamodel.Event;
 import org.hypertrace.core.datamodel.StructuredTrace;
 
 public class TraceEntitiesGraph {
@@ -20,7 +18,6 @@ public class TraceEntitiesGraph {
   private final Map<String, List<Entity>> childToParentEntities;
 
   /* these containers should be unmodifiable after initialization as we're exposing them via getters */
-  private Map<ByteBuffer, Event> eventMap;
   private Map<String, Entity> entityMap;
   private Set<Entity> rootEntities;
 

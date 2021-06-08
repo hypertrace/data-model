@@ -20,7 +20,7 @@ import org.hypertrace.core.datamodel.Event;
 public class SpanAttributeUtils {
 
   public static boolean isLeafSpan(StructuredTraceGraph structuredTraceGraph, Event event) {
-    List<Event> childEvents = structuredTraceGraph.getTraceEventsGraph().getChildrenEvents(event);
+    List<Event> childEvents = structuredTraceGraph.getChildrenEvents(event);
     return childEvents == null || childEvents.isEmpty();
   }
 

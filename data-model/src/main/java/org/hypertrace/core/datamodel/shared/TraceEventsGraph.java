@@ -75,8 +75,8 @@ public class TraceEventsGraph {
     List<Edge> eventEdges = trace.getEventEdgeList();
     if (eventEdges != null) {
       for (Edge edge : trace.getEventEdgeList()) {
-        Integer sourceIndex = edge.getSrcIndex();
-        Integer targetIndex = edge.getTgtIndex();
+        int sourceIndex = edge.getSrcIndex();
+        int targetIndex = edge.getTgtIndex();
         Event parentEvent = events.get(sourceIndex);
         Event childEvent = events.get(targetIndex);
         parentToChildrenEvents.computeIfAbsent(parentEvent.getEventId(), k -> new ArrayList<>())
