@@ -20,8 +20,6 @@ public class TraceEventsGraph {
   /* there could be multiple roots for partial trace and incomplete instrumented app spans */
   private final Map<ByteBuffer, List<Event>> parentToChildrenEvents;
   private final Map<ByteBuffer, Event> childToParentEvents;
-  private final Set<ByteBuffer> childrenEventIds;
-
 
   /* these containers should be unmodifiable after initialization as we're exposing them via getters */
   private final Map<ByteBuffer, Event> eventMap;
@@ -30,7 +28,6 @@ public class TraceEventsGraph {
   private TraceEventsGraph() {
     this.childToParentEvents = new HashMap<>();
     this.parentToChildrenEvents = new HashMap<>();
-    this.childrenEventIds = Sets.newHashSet();
     this.eventMap = Maps.newHashMap();
     this.rootEvents = Sets.newHashSet();
   }
@@ -80,12 +77,13 @@ public class TraceEventsGraph {
         parentToChildrenEvents.computeIfAbsent(parentEvent.getEventId(), k -> new ArrayList<>())
             .add(childEvent);
         childToParentEvents.put(childEvent.getEventId(), parentEvent);
-        childrenEventIds.add(childEvent.getEventId());
+
       }
     }
   }
 
   private void processEvents(StructuredTrace trace) {
+    Set<ByteBuffer> childrenEventIds = childToParentEvents.keySet();
     for (Event event : trace.getEventList()) {
       eventMap.put(event.getEventId(), event);
       if (!childrenEventIds.contains(event.getEventId())) {

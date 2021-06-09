@@ -16,7 +16,6 @@ public class TraceEntitiesGraph {
   /* entity have many-to-many relationship */
   private final Map<String, List<Entity>> parentToChildrenEntities;
   private final Map<String, List<Entity>> childToParentEntities;
-  private final Set<String> childrenEntityIds;
 
   /* these containers should be unmodifiable after initialization as we're exposing them via getters */
   private final Map<String, Entity> entityMap;
@@ -25,7 +24,6 @@ public class TraceEntitiesGraph {
   private TraceEntitiesGraph() {
     this.childToParentEntities = new HashMap<>();
     this.parentToChildrenEntities = new HashMap<>();
-    this.childrenEntityIds = Sets.newHashSet();
     this.entityMap = Maps.newHashMap();
     this.rootEntities = Sets.newHashSet();
   }
@@ -84,12 +82,12 @@ public class TraceEntitiesGraph {
             .add(childEntity);
         childToParentEntities.computeIfAbsent(childEntity.getEntityId(), k -> new ArrayList<>())
             .add(parentEntity);
-        childrenEntityIds.add(childEntity.getEntityId());
       }
     }
   }
 
   private void processEntities(StructuredTrace trace) {
+    Set<String> childrenEntityIds = childToParentEntities.keySet();
     for (Entity entity : trace.getEntityList()) {
       entityMap.put(entity.getEntityId(), entity);
       if (!childrenEntityIds.contains(entity.getEntityId())) {
