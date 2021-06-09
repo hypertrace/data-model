@@ -1,12 +1,12 @@
 package org.hypertrace.core.datamodel.shared;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.hypertrace.core.datamodel.Edge;
 import org.hypertrace.core.datamodel.Entity;
 import org.hypertrace.core.datamodel.StructuredTrace;
@@ -16,14 +16,18 @@ public class TraceEntitiesGraph {
   /* entity have many-to-many relationship */
   private final Map<String, List<Entity>> parentToChildrenEntities;
   private final Map<String, List<Entity>> childToParentEntities;
+  private final Set<String> childrenEntityIds;
 
   /* these containers should be unmodifiable after initialization as we're exposing them via getters */
-  private Map<String, Entity> entityMap;
-  private Set<Entity> rootEntities;
+  private final Map<String, Entity> entityMap;
+  private final Set<Entity> rootEntities;
 
   private TraceEntitiesGraph() {
     this.childToParentEntities = new HashMap<>();
     this.parentToChildrenEntities = new HashMap<>();
+    this.childrenEntityIds = Sets.newHashSet();
+    this.entityMap = Maps.newHashMap();
+    this.rootEntities = Sets.newHashSet();
   }
 
   /**
@@ -32,9 +36,8 @@ public class TraceEntitiesGraph {
    */
   public static TraceEntitiesGraph createGraph(StructuredTrace trace) {
     TraceEntitiesGraph graph = new TraceEntitiesGraph();
-    graph.buildEntityMap(trace);
     graph.buildParentChildRelationship(trace);
-    graph.buildRootEntities(trace);
+    graph.processEntities(trace);
     return graph;
   }
 
@@ -62,12 +65,6 @@ public class TraceEntitiesGraph {
     return entityMap;
   }
 
-  private void buildEntityMap(StructuredTrace trace) {
-    entityMap = trace.getEntityList().stream()
-        .collect(
-            Collectors.toUnmodifiableMap(Entity::getEntityId, Function.identity(), (e1, e2) -> e2));
-  }
-
   private void buildParentChildRelationship(StructuredTrace trace) {
     List<Entity> entities = trace.getEntityList();
 
@@ -87,22 +84,18 @@ public class TraceEntitiesGraph {
             .add(childEntity);
         childToParentEntities.computeIfAbsent(childEntity.getEntityId(), k -> new ArrayList<>())
             .add(parentEntity);
+        childrenEntityIds.add(childEntity.getEntityId());
       }
     }
   }
 
-  private void buildRootEntities(StructuredTrace trace) {
-    // build the root entity ids
-    Set<String> rootEntityIds = trace.getEntityList().stream().map(Entity::getEntityId)
-        .collect(Collectors.toSet());
-
-    // remove all the children, and what's remaining are the entities without children
-    // we will consider these are roots, including the ones that are standalone
-    Set<String> childrenEntityIds = parentToChildrenEntities.values().stream()
-        .flatMap(l -> l.stream().map(Entity::getEntityId)).collect(Collectors.toSet());
-    rootEntityIds.removeAll(childrenEntityIds);
-
-    rootEntities = rootEntityIds.stream().map(entityMap::get)
-        .collect(Collectors.toUnmodifiableSet());
+  private void processEntities(StructuredTrace trace) {
+    for (Entity entity : trace.getEntityList()) {
+      entityMap.put(entity.getEntityId(), entity);
+      if (!childrenEntityIds.contains(entity.getEntityId())) {
+        // all non-child events are root events
+        rootEntities.add(entity);
+      }
+    }
   }
 }
