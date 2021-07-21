@@ -18,16 +18,16 @@ public class StructuredTraceGraph {
   private TraceEntitiesGraph traceEntitiesGraph;
 
   public StructuredTraceGraph(StructuredTrace trace) {
-    this.traceEventsGraph = TraceEventsGraph.createGraph(trace);
-    this.traceEntitiesGraph = TraceEntitiesGraph.createGraph(trace);
+    this.traceEventsGraph = new TraceEventsGraph(trace);
+    this.traceEntitiesGraph = new TraceEntitiesGraph(trace);
   }
 
   public void reCreateTraceEventsGraph(StructuredTrace trace) {
-    this.traceEventsGraph = TraceEventsGraph.createGraph(trace);
+    this.traceEventsGraph = new TraceEventsGraph(trace);
   }
 
   public void reCreateTraceEntitiesGraph(StructuredTrace trace) {
-    this.traceEntitiesGraph = TraceEntitiesGraph.createGraph(trace);
+    this.traceEntitiesGraph = new TraceEntitiesGraph(trace);
   }
 
   public Set<Event> getRootEvents() {
