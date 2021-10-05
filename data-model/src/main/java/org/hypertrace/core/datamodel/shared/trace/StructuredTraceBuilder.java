@@ -366,9 +366,9 @@ public class StructuredTraceBuilder {
         continue;
       }
 
-      /*
-      For Follow from relationship:
-      * As, both the construct `child_of` and `follow_from` represent parent-child relation in common
+    /*
+     * For Follow from relationship:
+     * As, both the construct `child_of` and `follow_from` represent parent-child relation in common
      * where in one case parent is interested in child span's result while in other case not.
      *
      * So, to support common behaviour, we will be establish link for `follow_from` as well.
@@ -379,7 +379,7 @@ public class StructuredTraceBuilder {
      *   continue;
      * }
      * Ref: https://github.com/hypertrace/hypertrace/issues/234.
-      */
+     */
 
       Event parentEvent = eventMap.get(eventRef.getEventId());
 
