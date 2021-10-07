@@ -379,6 +379,7 @@ public class StructuredTraceBuilder {
      *   continue;
      * }
      * Ref: https://github.com/hypertrace/hypertrace/issues/234.
+     Note: Ideally, an event should have a single parent. It would be either via child_of or using follow_from.
      */
 
       Event parentEvent = eventMap.get(eventRef.getEventId());
