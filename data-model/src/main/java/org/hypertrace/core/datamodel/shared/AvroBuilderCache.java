@@ -24,7 +24,7 @@ public class AvroBuilderCache {
           Class<SpecificRecordBuilderBase>, Pair<Method, SpecificRecordBuilderBase>>
       AVRO_BUILDER_CACHE = new ConcurrentHashMap<>();
 
-  public static <T extends SpecificRecordBuilderBase> T fastNewAvroBuilder(
+  public static <T extends SpecificRecordBuilderBase> T fastNewBuilder(
       Class<T> specificAvroBuilderClass) {
     try {
       Pair<Method, SpecificRecordBuilderBase> pair =
