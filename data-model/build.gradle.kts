@@ -16,19 +16,17 @@ dependencies {
     api("org.apache.commons:commons-compress:1.21") {
       because("Multiple vulnerabilities in avro-declared version")
     }
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1") {
-      because(
-        "Denial of Service (DoS) " +
-          "[Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-2326698] " +
-          "in com.fasterxml.jackson.core:jackson-databind@2.12.2"
-      )
-    }
   }
   api("commons-codec:commons-codec:1.14")
   api("io.micrometer:micrometer-core:1.5.3")
 
   implementation("com.google.guava:guava:30.0-jre")
   implementation("org.apache.commons:commons-lang3:3.10")
+  constraints {
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1") {
+      because("https://snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-2326698")
+    }
+  }
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
   testImplementation("org.mockito:mockito-core:3.3.3")
