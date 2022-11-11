@@ -1,5 +1,6 @@
 package org.hypertrace.core.datamodel.shared;
 
+import java.util.List;
 import java.util.Optional;
 import org.hypertrace.core.datamodel.AttributeValue;
 import org.hypertrace.core.datamodel.Event;
@@ -29,6 +30,23 @@ public class TraceAttributeUtils {
     }
 
     return value.getValue();
+  }
+
+  public static List<String> getListAttribute(StructuredTrace trace, String attribute) {
+    if (trace.getAttributes() == null) {
+      return null;
+    }
+
+    if (trace.getAttributes().getAttributeMap() == null) {
+      return null;
+    }
+
+    AttributeValue value = trace.getAttributes().getAttributeMap().get(attribute);
+    if (value == null) {
+      return null;
+    }
+
+    return value.getValueList();
   }
 
   public static Optional<String> getAttributeValueIncludeSearchInSpans(
