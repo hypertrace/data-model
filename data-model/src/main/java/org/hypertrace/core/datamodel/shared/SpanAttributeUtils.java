@@ -1,12 +1,20 @@
 package org.hypertrace.core.datamodel.shared;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.hypertrace.core.datamodel.shared.AvroBuilderCache.fastNewBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.apache.avro.reflect.Nullable;
 import org.hypertrace.core.datamodel.AttributeValue;
 import org.hypertrace.core.datamodel.Attributes;
@@ -20,6 +28,7 @@ import org.hypertrace.core.datamodel.Event;
  * Span.
  */
 public class SpanAttributeUtils {
+  private static final ObjectMapper MAPPER = new ObjectMapper();
 
   public static boolean isLeafSpan(StructuredTraceGraph structuredTraceGraph, Event event) {
     List<Event> childEvents = structuredTraceGraph.getChildrenEvents(event);
@@ -104,6 +113,33 @@ public class SpanAttributeUtils {
     }
 
     return Boolean.parseBoolean(value.getValue());
+  }
+
+  public static List<String> getStringListAttribute(final Event event, final String attributeKey) {
+    final AttributeValue value = getAttributeValue(event, attributeKey);
+    if (value == null) {
+      return emptyList();
+    }
+
+    if (value.getValueList() != null && !value.getValueList().isEmpty()) {
+      return value.getValueList();
+    }
+
+    final String jsonValue = value.getValue();
+
+    try {
+      final JsonNode node = MAPPER.readTree(jsonValue);
+      if (node.isArray()) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(node.elements(), Spliterator.ORDERED), false)
+            .map(JsonNode::asText)
+            .collect(toUnmodifiableList());
+      }
+
+      return List.of(node.asText());
+    } catch (final JsonProcessingException e) {
+      return emptyList();
+    }
   }
 
   /**
