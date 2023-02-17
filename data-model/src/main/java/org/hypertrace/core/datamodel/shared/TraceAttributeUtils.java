@@ -15,6 +15,10 @@ public class TraceAttributeUtils {
         && trace.getAttributes().getAttributeMap().containsKey(attribute);
   }
 
+  public static boolean getBooleanAttribute(StructuredTrace trace, String attribute) {
+    return Boolean.parseBoolean(getStringAttribute(trace, attribute));
+  }
+
   public static String getStringAttribute(StructuredTrace trace, String attribute) {
     if (trace.getAttributes() == null) {
       return null;
