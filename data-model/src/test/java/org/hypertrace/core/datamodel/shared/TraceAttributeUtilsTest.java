@@ -64,5 +64,12 @@ public class TraceAttributeUtilsTest {
 
     attributeMap.put("someattribute", AttributeValue.newBuilder().setValue("true").build());
     assertTrue(TraceAttributeUtils.getBooleanAttribute(mockTrace, "someattribute"));
+
+    attributeMap.put(
+        "someOtherAttribute", AttributeValue.newBuilder().setValue("xyz").build());
+    assertFalse(TraceAttributeUtils.getBooleanAttribute(mockTrace, "someOtherAttribute"));
+
+    attributeMap.put("otherAttribute", AttributeValue.newBuilder().setValue("").build());
+    assertFalse(TraceAttributeUtils.getBooleanAttribute(mockTrace, "otherAttribute"));
   }
 }
