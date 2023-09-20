@@ -19,6 +19,8 @@ import org.apache.avro.reflect.Nullable;
 import org.hypertrace.core.datamodel.AttributeValue;
 import org.hypertrace.core.datamodel.Attributes;
 import org.hypertrace.core.datamodel.Event;
+import org.hypertrace.core.datamodel.Resource;
+import org.hypertrace.core.datamodel.StructuredTrace;
 
 /**
  * Span being a very generic data structure with different attributes, reading attributes from Span
@@ -80,6 +82,26 @@ public class SpanAttributeUtils {
   public static String getStringAttribute(Event event, String attributeKey) {
     AttributeValue value = getAttributeValue(event, attributeKey);
     return value == null ? null : value.getValue();
+  }
+
+  public static Optional<String> getResourceStringAttribute(
+      StructuredTrace trace, Event event, String attributeKey) {
+    if (event.getResourceIndex() < 0
+        || event.getResourceIndex() >= trace.getResourceList().size()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(trace.getResourceList().get(event.getResourceIndex()))
+        .map(Resource::getAttributes)
+        .flatMap(attributes -> getAttributeString(attributes, attributeKey));
+  }
+
+  private static Optional<String> getAttributeString(
+      @javax.annotation.Nullable Attributes attributes, String key) {
+    return Optional.ofNullable(attributes)
+        .map(Attributes::getAttributeMap)
+        .map(attributeMap -> attributeMap.get(key))
+        .map(AttributeValue::getValue);
   }
 
   public static Optional<String> getStringAttributeIgnoreKeyCase(Event event, String attributeKey) {
