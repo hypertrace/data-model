@@ -96,8 +96,7 @@ public class SpanAttributeUtils {
         .flatMap(attributes -> getAttributeString(attributes, attributeKey));
   }
 
-  private static Optional<String> getAttributeString(
-      @Nullable Attributes attributes, String key) {
+  private static Optional<String> getAttributeString(@Nullable Attributes attributes, String key) {
     return Optional.ofNullable(attributes)
         .map(Attributes::getAttributeMap)
         .map(attributeMap -> attributeMap.get(key))
