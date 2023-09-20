@@ -97,7 +97,7 @@ public class SpanAttributeUtils {
   }
 
   private static Optional<String> getAttributeString(
-      @javax.annotation.Nullable Attributes attributes, String key) {
+      @Nullable Attributes attributes, String key) {
     return Optional.ofNullable(attributes)
         .map(Attributes::getAttributeMap)
         .map(attributeMap -> attributeMap.get(key))
