@@ -11,7 +11,7 @@ tasks.test {
 }
 
 dependencies {
-  api("org.apache.avro:avro:1.11.0")
+  api("org.apache.avro:avro:1.11.3")
   constraints {
     api("org.apache.commons:commons-compress:1.21") {
       because("Multiple vulnerabilities in avro-declared version")
