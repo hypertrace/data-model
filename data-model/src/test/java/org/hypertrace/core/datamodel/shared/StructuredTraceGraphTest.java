@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -86,14 +85,8 @@ class StructuredTraceGraphTest {
         Sets.newHashSet(entities.get(rootIndex1), entities.get(rootIndex2));
 
     graph = new StructuredTraceGraph(trace);
-    assertEquals(expectedRootEntities, graph.getRootEntities());
     assertEquals(expectedRootEvents, graph.getRootEvents());
     assertEquals(events.get(sourceIdx1), graph.getParentEvent(events.get(targetIdx1)));
-    assertEquals(
-        Lists.newArrayList(entities.get(sourceIdx1)),
-        graph.getParentEntities(entities.get(targetIdx1)));
-    List<Entity> root1Children = graph.getChildrenEntities(entities.get(rootIndex1));
-    assertEquals(Lists.newArrayList(entities.get(targetIdx1)), root1Children);
     assertEquals(expectedEventMap, graph.getEventMap());
     assertEquals(childToParentIds, graph.getChildIdsToParentIds());
   }
@@ -194,7 +187,6 @@ class StructuredTraceGraphTest {
 
     StructuredTraceGraph graph = new StructuredTraceGraph(trace);
     assertEquals(3, graph.getEventMap().size());
-    assertEquals(1, graph.getRootEntities().size());
     assertEquals(1, graph.getRootEvents().size());
     Map<ByteBuffer, ByteBuffer> childIdToParentIds = graph.getChildIdsToParentIds();
     Map<ByteBuffer, List<ByteBuffer>> parentToChildEventIds = graph.getParentToChildEventIds();
@@ -204,8 +196,6 @@ class StructuredTraceGraphTest {
     assertTrue(
         parentToChildEventIds.containsKey(e1.getEventId())
             && parentToChildEventIds.containsKey(e2.getEventId()));
-    assertTrue(graph.getParentEntities(entity2).contains(entity1));
-    assertTrue(graph.getParentEntities(entity3).contains(entity2));
     assertEquals(e1, graph.getParentEvent(e2));
     assertEquals(e2, graph.getParentEvent(e3));
   }
@@ -296,11 +286,9 @@ class StructuredTraceGraphTest {
 
     StructuredTraceGraph graph = new StructuredTraceGraph(trace);
     assertEquals(2, graph.getEventMap().size());
-    assertEquals(1, graph.getRootEntities().size());
     assertEquals(1, graph.getRootEvents().size());
     assertTrue(graph.getChildIdsToParentIds().containsKey(e2.getEventId()));
     assertTrue(graph.getParentToChildEventIds().containsKey(e1.getEventId()));
-    assertTrue(graph.getParentEntities(entity2).contains(entity1));
     assertEquals(e1, graph.getParentEvent(e2));
 
     // add a new event and rebuild the event graph
@@ -328,34 +316,24 @@ class StructuredTraceGraphTest {
         StructuredTraceBuilder.buildStructuredTraceFromRawSpans(
             List.of(rawSpan1, rawSpan2, rawSpan3), traceId, CUSTOMER_ID);
     TraceEventsGraph traceEventsGraph = graph.getTraceEventsGraph();
-    TraceEntitiesGraph traceEntitiesGraph = graph.getTraceEntitiesGraph();
 
     graph.reCreateTraceEventsGraph(trace);
-    assertSame(traceEntitiesGraph, graph.getTraceEntitiesGraph());
     assertNotSame(traceEventsGraph, graph.getTraceEventsGraph());
     assertEquals(3, graph.getEventMap().size());
-    assertEquals(1, graph.getRootEntities().size());
     assertEquals(1, graph.getRootEvents().size());
     assertTrue(graph.getChildIdsToParentIds().containsKey(e2.getEventId()));
     assertTrue(graph.getChildIdsToParentIds().containsKey(e3.getEventId()));
     assertTrue(graph.getParentToChildEventIds().containsKey(e1.getEventId()));
-    assertTrue(graph.getParentEntities(entity2).contains(entity1));
-    assertEquals(1, graph.getChildrenEntities(entity1).size());
     assertEquals(e1, graph.getParentEvent(e2));
     assertEquals(e1, graph.getParentEvent(e3));
 
     traceEventsGraph = graph.getTraceEventsGraph();
-    graph.reCreateTraceEntitiesGraph(trace);
-    assertNotSame(traceEntitiesGraph, graph.getTraceEntitiesGraph());
     assertSame(traceEventsGraph, graph.getTraceEventsGraph());
     assertEquals(3, graph.getEventMap().size());
-    assertEquals(1, graph.getRootEntities().size());
     assertEquals(1, graph.getRootEvents().size());
     assertTrue(graph.getChildIdsToParentIds().containsKey(e2.getEventId()));
     assertTrue(graph.getChildIdsToParentIds().containsKey(e3.getEventId()));
     assertTrue(graph.getParentToChildEventIds().containsKey(e1.getEventId()));
-    assertTrue(graph.getParentEntities(entity2).contains(entity1));
-    assertEquals(2, graph.getChildrenEntities(entity1).size());
     assertEquals(e1, graph.getParentEvent(e2));
     assertEquals(e1, graph.getParentEvent(e3));
   }
