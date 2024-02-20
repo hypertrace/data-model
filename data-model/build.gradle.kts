@@ -14,9 +14,10 @@ tasks.test {
 dependencies {
   api("org.apache.avro:avro:1.11.3")
   constraints {
-    api("org.apache.commons:commons-compress:1.24.0") {
+    api("org.apache.commons:commons-compress:1.26.0") {
       because("Multiple vulnerabilities in avro-declared version")
       because("https://nvd.nist.gov/vuln/detail/CVE-2023-42503")
+      because("https://nvd.nist.gov/vuln/detail/CVE-2024-25710")
     }
     api("com.fasterxml.jackson.core:jackson-databind:2.14.2") {
       because("version 2.12.7.1 has a vulnerability https://snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-3038424")
