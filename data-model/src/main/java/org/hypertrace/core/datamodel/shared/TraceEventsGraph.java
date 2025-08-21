@@ -33,7 +33,9 @@ public class TraceEventsGraph {
     processEvents(trace);
   }
 
-  /** @return an immutable set containing the root events */
+  /**
+   * @return an immutable set containing the root events
+   */
   public Set<Event> getRootEvents() {
     return rootEvents;
   }
@@ -79,7 +81,9 @@ public class TraceEventsGraph {
     }
   }
 
-  /** @return an immutable map of event ids to events */
+  /**
+   * @return an immutable map of event ids to events
+   */
   public Map<ByteBuffer, Event> getEventMap() {
     return eventMap;
   }

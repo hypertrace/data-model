@@ -1,10 +1,10 @@
 plugins {
   `java-library`
   jacoco
-  id("org.hypertrace.avro-plugin") version "0.3.1"
+  id("org.hypertrace.avro-plugin") version "0.5.1"
   id("org.hypertrace.publish-plugin")
   id("org.hypertrace.jacoco-report-plugin")
-  id("org.owasp.dependencycheck") version "8.2.1"
+  id("org.owasp.dependencycheck") version "12.1.0"
 }
 
 tasks.test {
