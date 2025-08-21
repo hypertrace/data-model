@@ -30,7 +30,9 @@ public class TraceEntitiesGraph {
     processEntities(trace);
   }
 
-  /** @return an immutable set containing the root entities */
+  /**
+   * @return an immutable set containing the root entities
+   */
   public Set<Entity> getRootEntities() {
     return rootEntities;
   }
@@ -43,7 +45,9 @@ public class TraceEntitiesGraph {
     return parentToChildrenEntities.get(entity.getEntityId());
   }
 
-  /** @return an immutable map of entity ids to entities */
+  /**
+   * @return an immutable map of entity ids to entities
+   */
   public Map<String, Entity> getEntityMap() {
     return entityMap;
   }
